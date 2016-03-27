@@ -31,3 +31,14 @@ You will need [Leiningen][] 2.0.0 or above installed.
 To start a web server for the application, run:
 
     lein ring server
+
+```clojure
+democracy-works-exercise.dev> (run-migrations)
+nil
+democracy-works-exercise.dev> (require 'democracy-works-exercise.sqlite.migrations :reload)
+nil
+democracy-works-exercise.dev> (run-migrations)
+Applying 002-dummy-todos
+nil
+democracy-works-exercise.dev> 
+```

@@ -13,7 +13,7 @@
   (start [this]
     (println ";; Starting JettyComponent")
     (->> (default-options options)
-         (jetty/run-jetty handler)
+         (jetty/run-jetty (handler (:db this)))
          (assoc this :server)))
 
   (stop [this]

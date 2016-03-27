@@ -4,6 +4,7 @@
   (:require
     [clojure.java.jdbc :as j]
     [clojure.set :as set]
+    [honeysql.core :as hsql]
     [honeysql.format :as hsql-format]))
 
 (def db
@@ -38,3 +39,8 @@
   java.lang.Boolean
   (to-sql [x]
     (hsql-format/add-param java.lang.Boolean x)))
+
+(defn todos
+  [db]
+  (let [q (hsql/build :select [:todo :done] :from [:todos])]
+    (j/query db (hsql/format q))))

@@ -8,4 +8,6 @@
   [config-options handler]
   (-> (component/system-map
        :db (sqlite/sqlite-component config-options)
-       :app (jetty/jetty-component config-options handler))))
+       :app (component/using
+             (jetty/jetty-component config-options handler)
+             {:db :db}))))
