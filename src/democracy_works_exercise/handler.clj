@@ -3,7 +3,7 @@
     [compojure.core :refer :all]
     [compojure.route :as route]
     [democracy-works-exercise.templates :as tmpl]
-    [democracy-works-exercise.sqlite.core :as data]
+    [democracy-works-exercise.sqlite.todos :as todos]
     [ring.util.response :as response]
     [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
@@ -11,7 +11,10 @@
   (GET "/" req
     (tmpl/template "Todos" (tmpl/todos (:db req))))
   (POST "/todos" {{todo :todo} :params :as req}
-    (do (data/insert-todo! (:db req) todo)
+    (do (todos/insert-todo! (:db req) todo)
+        (response/redirect "/")))
+  (POST "/todos/toggle-status" {{id :id} :params :as req}
+    (do (todos/toggle-todo-status! (:db req) id)
         (response/redirect "/")))
   (GET "/about" [] (tmpl/template "About" tmpl/about))
   (route/not-found "Not Found"))
