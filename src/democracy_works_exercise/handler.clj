@@ -2,7 +2,6 @@
   (:require
     [compojure.core :refer :all]
     [compojure.route :as route]
-    [ring.adapter.jetty :as jetty]
     [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
 (defn template
@@ -36,9 +35,3 @@
 
 (def app
   (wrap-defaults app-routes site-defaults))
-
-(defn server
-  [& {:keys [join? port] :or {join? false port 3000} :as opts}]
-  (let [opts' (assoc opts :join? join? :port port)]
-    (println "opts? " opts')
-    (jetty/run-jetty app opts')))
