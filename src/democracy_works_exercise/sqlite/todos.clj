@@ -24,3 +24,8 @@
         update (hsql/build :update :todos :set {:done not-done}
                            :where [:= :id id])]
     (j/execute! db (hsql/format update))))
+
+(defn delete!
+  [db id]
+  (let [delete (hsql/build :delete-from :todos :where [:= :id id])]
+    (j/execute! db (hsql/format delete))))

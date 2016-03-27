@@ -16,6 +16,9 @@
   (POST "/todos/toggle-status" {{id :id} :params :as req}
     (do (todos/toggle-todo-status! (:db req) id)
         (response/redirect "/")))
+  (POST "/todos/delete" {{id :id} :params :as req}
+    (do (todos/delete! (:db req) id)
+        (response/redirect "/")))
   (GET "/about" [] (tmpl/template "About" tmpl/about))
   (route/not-found "Not Found"))
 

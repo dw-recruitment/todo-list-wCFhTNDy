@@ -32,7 +32,10 @@
      (if done [:span.todo-text.done todo] [:span.todo-text todo])
      [:form {:action "/todos/toggle-status" :method "POST"}
       [:input {:type "hidden" :name "id" :value id}]
-      [:input {:type "submit" :value button-str}]]]))
+      [:input {:type "submit" :value button-str}]]
+     [:form {:action "/todos/delete" :method "POST"}
+      [:input {:type "hidden" :name "id" :value id}]
+      [:input {:type "submit" :value "delete"}]]]))
 
 (defn todos
   [db]
