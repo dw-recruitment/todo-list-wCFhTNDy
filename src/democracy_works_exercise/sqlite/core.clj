@@ -44,3 +44,8 @@
   [db]
   (let [q (hsql/build :select [:todo :done] :from [:todos])]
     (j/query db (hsql/format q))))
+
+(defn insert-todo!
+  [db todo]
+  (let [ins (hsql/build :insert-into :todos :values [{:todo todo}])]
+    (j/execute! db (hsql/format ins))))
