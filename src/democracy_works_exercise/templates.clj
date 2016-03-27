@@ -17,15 +17,17 @@
           "div.todo span.done {text-decoration: line-through}")]]
    [:body body]))
 
-(def todos-wrapper
+(defn todo-list-wrapper
+  [list-name list-id]
   [:div.todos
-   [:h2 "Todos"]
+   [:h2 list-name]
    [:form {:action "/todos" :method "POST"}
     [:input {:name "todo" :type "text"}]
+    [:input {:type "hidden" :name "list-id" :value list-id}]
     [:input {:name "submit" :type "submit"}]]])
 
 (defn todo
-  [{:keys [id todo done] :as todo}]
+  [{:keys [id todo done] :as todo-rec}]
   (let [done-str (get {false "todo" true "done"} done)
         button-str (get {false "complete" true "undo"} done)]
     [:div.todo
@@ -37,9 +39,26 @@
       [:input {:type "hidden" :name "id" :value id}]
       [:input {:type "submit" :value "delete"}]]]))
 
+(defn todo-lists-wrapper
+  [todo-lists]
+  [:div.todo-lists
+   [:h1 "Todos"]
+   [:form {:action "/todo-lists" :method "POST"}
+    [:label {:for "list-name"} "Add a new Todo list: "]
+    [:input {:name "list-name" :type "text"}]
+    [:input {:name "submit" :type "submit"}]]
+   todo-lists])
+
 (defn todos
   [db]
-  (reduce #(conj %1 (todo %2)) todos-wrapper (todos/todos db)))
+  (let [todos (todos/todos db)]
+    (->> (for [[[list-id list-name] todos'] todos]
+           (->> (sort-by :id todos')
+                (reduce #(if (nil? (:id %2))
+                           %1
+                           (conj %1 (todo %2)))
+                        (todo-list-wrapper list-name list-id))))
+         todo-lists-wrapper)))
 
 (def about
   [:div.about

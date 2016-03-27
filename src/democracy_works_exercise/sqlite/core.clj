@@ -21,8 +21,9 @@
   Integer 
   (result-set-read-column [n rs idx]
     (let [table-name (.getTableName rs idx)
-          col-name (.getColumnName rs idx)]
-      (if ((get bool-cols table-name) col-name)
+          col-name (.getColumnName rs idx)
+          table-bool-cols (get bool-cols table-name)]
+      (if (and table-bool-cols (table-bool-cols col-name))
         (get sqlite-bool n)
         n))))
 

@@ -10,8 +10,9 @@
 (defroutes app-routes
   (GET "/" req
     (tmpl/template "Todos" (tmpl/todos (:db req))))
-  (POST "/todos" {{todo :todo} :params :as req}
-    (do (todos/insert-todo! (:db req) todo)
+
+  (POST "/todos" {{todo :todo list-id :list-id} :params :as req}
+    (do (todos/insert-todo! (:db req) list-id todo)
         (response/redirect "/")))
   (POST "/todos/toggle-status" {{id :id} :params :as req}
     (do (todos/toggle-todo-status! (:db req) id)
@@ -19,6 +20,11 @@
   (POST "/todos/delete" {{id :id} :params :as req}
     (do (todos/delete! (:db req) id)
         (response/redirect "/")))
+
+  (POST "/todo-lists" {{list-name :list-name} :params :as req}
+    (do (todos/insert-list! (:db req) list-name)
+        (response/redirect "/")))
+
   (GET "/about" [] (tmpl/template "About" tmpl/about))
   (route/not-found "Not Found"))
 
