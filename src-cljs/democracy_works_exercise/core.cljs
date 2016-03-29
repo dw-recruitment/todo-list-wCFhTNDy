@@ -12,14 +12,6 @@
   [msg]
   (reset! data-store (reader/read-string (.-data msg))))
 
-(defn some-component []
-  [:div
-   [:h3 "I am a component!"]
-   [:p.someclass
-    "I have " [:strong "bold"]
-    [:span {:style {:color "red"}} " and red"]
-    " text."]])
-
 (defn text-input
   [val placeholder]
   [:input {:name "todo" :type "text" :value @val
@@ -35,9 +27,10 @@
      [:div.input-field
       [text-input val "Add a new todo item"]
       [:input {:name "submit" :type "submit"
+               :value "add"
                :on-click #(POST "/todos"
                                 {:params {:todo @val :list-id list-id}
-                                 :handler (fn [r] (println "RESP? " r))})}]]]))
+                                 :handler (fn [r])})}]]]))
 
 (defn todo
   [{:keys [id todo done] :as todo-rec}]
@@ -50,12 +43,12 @@
               :value button-str
               :on-click #(POST "/todos/toggle-status"
                                {:params {:id id}
-                                :handler (fn [r] (println "toggle! " r))})}]
+                                :handler (fn [r])})}]
      [:input {:type "submit"
               :value "delete"
               :on-click #(DELETE "/todos"
                                  {:params {:id id}
-                                  :handler (fn [r] (println "DELETED! " r))})}]]))
+                                  :handler (fn [r])})}]]))
 
 (defn all-todo-lists-wrapper
   [todo-lists]
@@ -65,25 +58,38 @@
      [:div.todo-list-form
       [text-input val "Add a new todo list"]
       [:input {:name "submit" :type "submit"
+               :value "add"
                :on-click #(POST "/todo-lists"
                                 {:params {:list-name @val}
-                                 :handler (fn [r] (println r))})}]]
+                                 :handler (fn [r])})}]]
      todo-lists]))
 
+(defn templatize-todo-list
+  "Sorts a list of todos by the ID (implying default insertion order)
+  and formats it for rendering using hiccup notation."
+  [list-id list-name list-todos]
+  (->> (sort-by :id list-todos)
+       (reduce
+        #(if (nil? (:id %2))
+           %1 ; here we have a list with no items, so we skip
+              ; rendering and continue on to the next one.
+           (conj %1 (todo %2)))
+        (todo-list-wrapper list-name list-id))))
+
 (defn todos
-  []
-  (->> (doall
-        (for [[[list-id list-name] todos'] (sort-by (comp second key) @data-store)]
-         (->> (sort-by :id todos')
-              (reduce #(if (nil? (:id %2))
-                         %1
-                         (conj %1 (todo %2)))
-                      (todo-list-wrapper list-name list-id)))))
-       all-todo-lists-wrapper))
+  "Takes a map of todo lists indexed by vectors containing their
+  list id and their list name, sorts them and formats each todo list
+  for rendering in hiccup notation."
+  [data-store]
+  (let [sorted-lists-by-list-name (sort-by (comp second key) @data-store)]
+    (->> (for [[[list-id list-name] list-todos] sorted-lists-by-list-name]
+           (templatize-todo-list list-id list-name list-todos))
+         doall
+         all-todo-lists-wrapper)))
 
 (defn mount-reagent
   []
-  (r/render-component [todos] (.getElementById js/document "app")))
+  (r/render-component [todos data-store] (.getElementById js/document "app")))
 
 (defn init!
   []

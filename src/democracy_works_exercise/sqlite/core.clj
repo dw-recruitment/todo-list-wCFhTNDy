@@ -36,6 +36,8 @@
 
 ;; For ensuring boolean values are handled properly in HoneySQL so
 ;; that they get added as parameters in a prepared statement
+;; (so that they are handled properly by the SQLite JDBC
+;; implementation).
 (extend-protocol hsql-format/ToSql
   java.lang.Boolean
   (to-sql [x]

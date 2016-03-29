@@ -5,6 +5,12 @@
     [democracy-works-exercise.sqlite.core :as sqlite]
     [honeysql.core :as hsql]))
 
+;; SQLite doesn't really need to be started and shut down,
+;; but it's nice to set up dependencies in this way so that
+;; if we were possibly to swap out the datastore at a later
+;; date, the mechanisms would already be in place to easy
+;; support dropping in some other datastore.
+
 (defn table-names
   [db]
   (j/query db (hsql/format (hsql/build :select [:name] :from [:sqlite_master]))))
