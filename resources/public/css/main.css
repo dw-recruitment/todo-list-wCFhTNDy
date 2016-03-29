@@ -1,0 +1,34 @@
+
+div#app {
+  margin-left: auto;
+  margin-right: auto;
+  width: 850px;
+  position: relative;
+  top: 50px;
+  background-color: #ADD8E6; 
+  padding: 20px;
+}
+
+div.todos {
+  border: 1px solid black;
+  background-color: #eeeeee;
+  padding: 8px;
+  margin-top: 12px;
+}
+
+div.todo {
+  margin-top: 12px;
+  margin-left: 12px;
+}
+
+div.todo form {
+  display: inline-block;
+}
+
+div.todo span.todo-text {
+  display: inline-block;
+}
+
+div.todo span.done {
+  text-decoration: line-through;
+}

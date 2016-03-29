@@ -7,8 +7,7 @@
     [democracy-works-exercise.handler :as handler]
     [democracy-works-exercise.sqlite.migrations :as migrations]
     [honeysql.core :as hsql]
-    [ragtime.repl :as repl]
-    ))
+    [ragtime.repl :as repl]))
 
 (defn run-migrations
   []
@@ -37,4 +36,4 @@
 
 (defn reset []
   (stop)
-  (refresh :after 'user/go))
+  (refresh :after 'democracy-works-exercise.dev/go))

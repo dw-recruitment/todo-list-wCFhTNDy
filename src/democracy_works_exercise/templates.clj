@@ -11,54 +11,12 @@
    [:head
     [:meta {:charset "utf-8"}]
     [:title title]
-    [:style
-     (str "div.todo form {display: inline-block}"
-          "div.todo span.todo-text {display: inline-block}"
-          "div.todo span.done {text-decoration: line-through}")]]
-   [:body body]))
+    [:link {:href "css/main.css" :rel "stylesheet"}]]
+   [:body
+    [:script {:type "text/javascript" :src "js/app.js"}]
+    body]))
 
-(defn todo-list-wrapper
-  [list-name list-id]
-  [:div.todos
-   [:h2 list-name]
-   [:form {:action "/todos" :method "POST"}
-    [:input {:name "todo" :type "text"}]
-    [:input {:type "hidden" :name "list-id" :value list-id}]
-    [:input {:name "submit" :type "submit"}]]])
-
-(defn todo
-  [{:keys [id todo done] :as todo-rec}]
-  (let [done-str (get {false "todo" true "done"} done)
-        button-str (get {false "complete" true "undo"} done)]
-    [:div.todo
-     (if done [:span.todo-text.done todo] [:span.todo-text todo])
-     [:form {:action "/todos/toggle-status" :method "POST"}
-      [:input {:type "hidden" :name "id" :value id}]
-      [:input {:type "submit" :value button-str}]]
-     [:form {:action "/todos/delete" :method "POST"}
-      [:input {:type "hidden" :name "id" :value id}]
-      [:input {:type "submit" :value "delete"}]]]))
-
-(defn todo-lists-wrapper
-  [todo-lists]
-  [:div.todo-lists
-   [:h1 "Todos"]
-   [:form {:action "/todo-lists" :method "POST"}
-    [:label {:for "list-name"} "Add a new Todo list: "]
-    [:input {:name "list-name" :type "text"}]
-    [:input {:name "submit" :type "submit"}]]
-   todo-lists])
-
-(defn todos
-  [db]
-  (let [todos (todos/todos db)]
-    (->> (for [[[list-id list-name] todos'] todos]
-           (->> (sort-by :id todos')
-                (reduce #(if (nil? (:id %2))
-                           %1
-                           (conj %1 (todo %2)))
-                        (todo-list-wrapper list-name list-id))))
-         todo-lists-wrapper)))
+(def app-root [:div#app])
 
 (def about
   [:div.about

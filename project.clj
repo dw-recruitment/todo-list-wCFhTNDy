@@ -8,21 +8,25 @@
   :repositories {"sonatype-oss-public" "https://oss.sonatype.org/content/groups/public/"} 
 
   :dependencies [
+                 [aleph "0.4.1-beta7"]
+                 [cljs-ajax "0.5.4"]
+                 [cljsjs/react "15.0.0-rc.2-0"]
                  [com.stuartsierra/component "0.3.1"]
                  [compojure "1.5.0"]
                  [hiccup "1.0.5"]
                  [honeysql "0.6.3"]
                  [org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.8.34"]
                  [org.clojure/java.jdbc "0.4.2"]
                  [org.xerial/sqlite-jdbc "3.8.11.2"]
                  [ragtime "0.5.3"]
+                 [reagent "0.6.0-alpha"]
                  [ring "1.4.0"]
+                 [ring-transit "0.1.4"]
                  [ring/ring-defaults "0.2.0"]
                  ]
 
-  :plugins [[lein-ring "0.9.7"]]
-
-  :ring {:handler democracy-works-exercise.handler/app}
+  :plugins [[lein-cljsbuild "1.1.3"]]
 
   :profiles
   {:dev
@@ -39,4 +43,16 @@
     ["dev"]
 
     :repl-options
-    {:init-ns democracy-works-exercise.dev}}})
+    {:init-ns democracy-works-exercise.dev}}}
+
+  :cljsbuild
+  {:builds
+   [{:source-paths ["src-cljs"]
+     :compiler
+     {
+      :output-to "resources/public/js/app.js"
+      :pretty-print true
+      :optimizations :whitespace
+      ;; :source-map true
+      ;; :output-dir "resources/public/js"
+      }}]})
